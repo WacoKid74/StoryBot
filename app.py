@@ -30,6 +30,15 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+    <style>
+    /* Fix for password input alignment issue */
+    .stTextInput input[type="password"] {
+        line-height: 1.5rem;
+        height: auto;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 # === Basic password protection ===
 def check_password():
