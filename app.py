@@ -237,6 +237,12 @@ Only extract real values. If unclear, leave the field empty.
                     ]
 
             try:
+                # Try to extract number from query if GPT failed
+                if not filter_dict.get("total_requested"):
+                    import re
+                    match = re.search(r'\b(\d+)\b', query)
+                    if match:
+                        filter_dict["total_requested"] = match.group(1)
                 total = int(filter_dict.get("total_requested", "").strip() or 3)
             except:
                 total = 3
