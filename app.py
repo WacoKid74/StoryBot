@@ -286,7 +286,6 @@ Only extract real values. If unclear, leave the field empty.
                     st.markdown(f"✅ Rows after **name** filter: {len(filtered_df)}")
 
             try:
-                # Try to extract number from GPT first
                 total_requested_raw = filter_dict.get("total_requested")
 
                 word_to_number = {
@@ -294,29 +293,25 @@ Only extract real values. If unclear, leave the field empty.
                     "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10
                 }
 
-                # If missing, infer from query text using numbers or common phrases
                 if not total_requested_raw:
-                    # Check for numeric patterns like "2 stories"
+                    # Look for digit-based number in the query
                     match = re.search(r'\b(\d+)\b', query)
                     if match:
                         total_requested_raw = match.group(1)
-                    # Check for singular phrases
-                    elif any(re.search(rf"\b{phrase}\b", query.lower()) for phrase in ["a story", "1 story", "one story", "a", "one", "single", "any"]):
-                        total_requested_raw = 1
-
-                # Final fallback and sanitization
-                    if isinstance(total_requested_raw, str) and total_requested_raw.lower() in word_to_number:
-                        total = word_to_number[total_requested_raw.lower()]
                     else:
-                        total = int(total_requested_raw) if total_requested_raw else 3
+                        # Look for word-based numbers (e.g., "two stories")
+                        for word, number in word_to_number.items():
+                            if re.search(rf"\b{word}\b", query.lower()):
+                                total_requested_raw = number
+                                break
+                        # Look for common single-story phrases
+                        if not total_requested_raw and re.search(r"\b(a|one|single|any)\b", query.lower()):
+                            total_requested_raw = 1
 
-                    if total <= 0:
-                        total = 3 
-
+                total = int(total_requested_raw) if total_requested_raw else 3
+                if total <= 0:
+                    total = 3
             except (ValueError, TypeError):
-                total = 3
-
-            if "total" not in locals():
                 total = 3
 
             top_stories = filtered_df.head(total)
