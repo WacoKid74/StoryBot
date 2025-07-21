@@ -105,10 +105,17 @@ state_abbr.update(region_synonyms)
 issue_synonyms = {
     "abortion": ["abortion", "choice", "reproductive rights", "roe", "dobbs", "planned parenthood"],
     "small biz": ["small biz", "small business", "business owner", "entrepreneur", "startup", "independent business", "family business", "local business", "businesses", "self-employed", "self employment", "small business owners", "small business owner", "small businesses"],
-    "RX drugs / healthcare": ["healthcare", "medical", "medicaid", "doctor", "hospital", "insurance" , "rx", "prescription rx", "prescription drugs", "rx drugs"],
+    "rx drugs / healthcare": ["healthcare", "medical", "medicaid", "doctor", "hospital", "insurance", "rx", "prescription rx", "prescription drugs", "rx drugs"],
     "student debt": ["student debt", "loan forgiveness", "student loans", "college debt", "debt relief"],
     "inflation": ["inflation", "prices", "cost of living", "grocery", "gas", "economy"],
-    "democracy": ["democracy", "election", "vote", "trump", "january 6", "insurrection"]
+    "democracy": ["democracy", "election", "vote", "trump", "january 6", "insurrection"],
+    "labor / union / jobs": ["labor", "union", "jobs", "worker", "workers", "employment", "working class", "blue collar", "organized labor", "labor union"],
+    "gun safety": ["guns", "gun violence", "gun control", "gun reform", "gun safety", "shootings", "mass shootings"],
+    "immigration": ["immigration", "border", "migrant", "asylum", "undocumented", "immigrants", "refugee"],
+    "child care / ctc": ["child care", "daycare", "ctc", "child tax credit", "early education", "childcare"],
+    "social security and medicare": ["social security", "medicare", "retirement", "seniors", "disability benefits"],
+    "insulin": ["insulin", "diabetes", "blood sugar", "type 1", "type 2", "glucose", "affordable insulin"],
+    "veterans & military": ["veterans", "military", "army", "navy", "air force", "service member", "vets", "military families"]
 }
 
 race_synonyms = {
