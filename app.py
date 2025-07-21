@@ -102,7 +102,7 @@ region_synonyms = {
 # === Merge state_abbr and state_groups ===
 state_abbr.update(region_synonyms)
 
-topic_synonyms = {
+issue_synonyms = {
     "abortion": ["abortion", "choice", "reproductive rights"],
     "healthcare": ["healthcare", "medical", "medicaid"],
     "economy": ["economy", "jobs", "inflation", "wages"],
@@ -193,10 +193,10 @@ Only extract real values. If unclear, leave the field empty.
             if filter_dict.get("issue"):
                 issue = filter_dict["issue"].lower()
                 expanded_issues = [issue]
-                for k, v in topic_synonyms.items():
+                for k, v in issue_synonyms.items():
                     if issue in v:
                         expanded_issues.extend(v)
-                for col in ["Topic", "Bucket/Topic"]:
+                for col in ["Issue"]:
                     if col in filtered_df.columns:
                         mask = filtered_df[col].astype(str).str.lower().apply(lambda x: any(term in x for term in expanded_issues))
                         filtered_df = filtered_df[mask]
@@ -247,7 +247,7 @@ Only extract real values. If unclear, leave the field empty.
                 st.markdown("""---""")
                 st.markdown(f"**NAME**: {full_name}")
                 st.markdown(f"**STATE**: {row.get('State', 'N/A')}")
-                st.markdown(f"**TOPIC**: {row.get('Topic', row.get('Bucket/Topic', 'N/A'))}")
+                st.markdown(f"**ISSUE**: {row.get('Issue', 'N/A')}")
                 st.markdown(f"**Age**: {row.get('Age', 'N/A')}")
                 st.markdown(f"**Race**: {row.get('Race', row.get('Demographic', 'N/A'))}")
                 st.markdown(f"**STORY**:\n{row.get('Story', row.get('Story Overview', 'N/A'))}")
