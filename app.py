@@ -58,6 +58,8 @@ import os
 from openai import OpenAI
 from PIL import Image
 import json
+import re
+
 
 # === Load OpenAI API Key ===
 client = OpenAI(
@@ -282,8 +284,6 @@ Only extract real values. If unclear, leave the field empty.
                         filtered_df["Last Name"].astype(str).str.lower().str.contains(name, na=False)
                     ]
                     st.markdown(f"✅ Rows after **name** filter: {len(filtered_df)}")
-
-            import re
 
             try:
                 # Try to extract number from GPT first
