@@ -1,5 +1,36 @@
 import streamlit as st
 
+# Inject custom CSS for styling
+st.markdown("""
+    <style>
+    body {
+        background-color: #f0f4f8;
+        font-family: 'Segoe UI', sans-serif;
+    }
+    .stApp {
+        max-width: 1000px;
+        margin: auto;
+        padding: 2rem;
+    }
+    .block-container {
+        background-color: white;
+        border-radius: 10px;
+        padding: 2rem;
+        border-left: 6px solid #2a6de0;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    }
+    h1, h2, h3 {
+        color: #2a6de0;
+    }
+    .stTextInput > div > div > input {
+        border: 2px solid #2a6de0;
+        border-radius: 5px;
+        padding: 0.5rem;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+
 # === Basic password protection ===
 def check_password():
     def password_entered():
