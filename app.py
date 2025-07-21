@@ -136,8 +136,8 @@ df.columns = df.columns.str.strip()
 
 # === Page Layout ===
 st.set_page_config(page_title="Blue Sky Strategy StoryBot", layout="wide")
-st.title("🔍 Blue Sky Strategy StoryBot 🔍")
-st.markdown("Enter a natural language search (e.g. '3 abortion stories from suburban women in Wisconsin'):")
+st.title("🔍 Blue Sky Strategy StoryBot")
+st.markdown("Enter the type of story you're looking for! (e.g. 'Please give me one story on abortion from a battleground state'):")
 query = st.text_input("What kind of story are you looking for?", "")
 
 # === Run Search ===
@@ -234,7 +234,10 @@ Only extract real values. If unclear, leave the field empty.
                         filtered_df["Last Name"].astype(str).str.lower().str.contains(name, na=False)
                     ]
 
-            total = int(filter_dict.get("total_requested") or 3)
+            try:
+                total = int(filter_dict.get("total_requested", "").strip() or 3)
+            except:
+                total = 3
             top_stories = filtered_df.head(total)
 
             st.subheader("📋 Matching Stories")
