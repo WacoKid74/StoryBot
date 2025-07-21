@@ -263,8 +263,6 @@ Only extract real values. If unclear, leave the field empty.
                 if total <= 0:
                     total = 3
                 
-                st.write("✅ Rows after number filter:", len(filtered_df))
-
             except (ValueError, TypeError):
                 total = 3
 
