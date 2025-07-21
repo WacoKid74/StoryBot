@@ -156,6 +156,7 @@ if query:
 You are an assistant helping search a structured voter story database.
 The user asked: '{query}'
 Return a JSON with keys: \"state\", \"issue\", \"gender\", \"race\", \"name\", and \"total_requested\".
+Common roles (like 'workers', 'teachers', 'farmers') belong under \"issue\" or \"topic\" – not \"name\".
 Only extract real values. If unclear, leave the field empty.
 """
 
@@ -212,6 +213,22 @@ Only extract real values. If unclear, leave the field empty.
                         filtered_df = filtered_df[mask]
                         st.markdown(f"✅ Rows after **issue** filter: {len(filtered_df)}")
                         break
+
+            elif not filter_dict.get("issue"):
+                # Backup matching: infer issue from query using synonyms
+                found_issue = None
+                for label, synonyms in issue_synonyms.items():
+                    if any(re.search(rf"\b{re.escape(term)}\b", query.lower()) for term in synonyms):
+                        found_issue = label
+                        break
+                if found_issue:
+                    expanded_issues = issue_synonyms[found_issue]
+                    for col in ["Issue"]:
+                        if col in filtered_df.columns:
+                            mask = filtered_df[col].astype(str).str.lower().apply(lambda x: any(term in x for term in expanded_issues))
+                            filtered_df = filtered_df[mask]
+                            st.markdown(f"✅ Rows after **(fallback issue)** filter: {len(filtered_df)}")
+                            break
 
 # --- Gender Filter ---
             if filter_dict.get("gender"):
