@@ -257,8 +257,7 @@ Only extract real values. If unclear, leave the field empty.
                     total = 3
             except (ValueError, TypeError):
                 total = 3
-                
-        top_stories = filtered_df.head(total)
+                top_stories = filtered_df.head(total)
 
             st.subheader("📋 Matching Stories")
 
