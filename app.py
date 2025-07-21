@@ -299,6 +299,9 @@ Only extract real values. If unclear, leave the field empty.
             except (ValueError, TypeError):
                 total = 3
 
+            if "total" not in locals():
+                total = 3
+
             top_stories = filtered_df.head(total)
 
             st.subheader("📋 Matching Stories")
