@@ -242,10 +242,11 @@ Only extract real values. If unclear, leave the field empty.
                     ]
                     st.markdown(f"✅ Rows after **name** filter: {len(filtered_df)}")
 
+            import re
+
             try:
                 # Try to extract number from query if GPT didn't supply one
                 if not filter_dict.get("total_requested"):
-                    import re
                     match = re.search(r'\b(\d+)\b', query)
                     if match:
                         filter_dict["total_requested"] = match.group(1)
@@ -257,7 +258,9 @@ Only extract real values. If unclear, leave the field empty.
                     total = 3
             except (ValueError, TypeError):
                 total = 3
-                top_stories = filtered_df.head(total)
+
+            # ✅ Always define top_stories after handling the number
+            top_stories = filtered_df.head(total)
 
             st.subheader("📋 Matching Stories")
 
