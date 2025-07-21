@@ -103,10 +103,12 @@ region_synonyms = {
 state_abbr.update(region_synonyms)
 
 issue_synonyms = {
-    "abortion": ["abortion", "choice", "reproductive rights"],
-    "healthcare": ["healthcare", "medical", "medicaid"],
-    "economy": ["economy", "jobs", "inflation", "wages"],
-    "student debt": ["student loans", "college debt", "student debt"]
+    "abortion": ["abortion", "choice", "reproductive rights", "roe", "dobbs", "planned parenthood"],
+    "small biz": ["small biz", "small business", "business owner", "entrepreneur", "startup", "independent business", "family business", "local business", "businesses", "self-employed", "self employment", "small business owners", "small business owner", "small businesses"],
+    "RX drugs / healthcare": ["healthcare", "medical", "medicaid", "doctor", "hospital", "insurance" , "rx", "prescription rx", "prescription drugs", "rx drugs"],
+    "student debt": ["student debt", "loan forgiveness", "student loans", "college debt", "debt relief"],
+    "inflation": ["inflation", "prices", "cost of living", "grocery", "gas", "economy"],
+    "democracy": ["democracy", "election", "vote", "trump", "january 6", "insurrection"]
 }
 
 race_synonyms = {
