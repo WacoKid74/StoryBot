@@ -255,7 +255,7 @@ Only extract real values. If unclear, leave the field empty.
                     if match:
                         total_requested_raw = match.group(1)
                     # Check for singular phrases
-                    elif any(phrase in query.lower() for phrase in ["a story", "one story", "1 story"]):
+                    elif any(re.search(rf"\b{phrase}\b", query.lower()) for phrase in ["a story", "1 story", "one story", "a", "one", "single", "any"]):
                         total_requested_raw = 1
 
                 # Final fallback and sanitization
