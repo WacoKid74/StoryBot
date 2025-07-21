@@ -248,6 +248,11 @@ Only extract real values. If unclear, leave the field empty.
                 # Try to extract number from GPT first
                 total_requested_raw = filter_dict.get("total_requested")
 
+                word_to_number = {
+                    "one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
+                    "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10
+                }
+
                 # If missing, infer from query text using numbers or common phrases
                 if not total_requested_raw:
                     # Check for numeric patterns like "2 stories"
@@ -259,10 +264,14 @@ Only extract real values. If unclear, leave the field empty.
                         total_requested_raw = 1
 
                 # Final fallback and sanitization
-                total = int(total_requested_raw) if total_requested_raw else 3
-                if total <= 0:
-                    total = 3
-                
+                    if isinstance(total_requested_raw, str) and total_requested_raw.lower() in word_to_number:
+                        total = word_to_number[total_requested_raw.lower()]
+                    else:
+                        total = int(total_requested_raw) if total_requested_raw else 3
+
+                    if total <= 0:
+                        total = 3 
+
             except (ValueError, TypeError):
                 total = 3
 
