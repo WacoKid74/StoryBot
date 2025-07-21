@@ -241,17 +241,22 @@ Only extract real values. If unclear, leave the field empty.
                         filtered_df["Last Name"].astype(str).str.lower().str.contains(name, na=False)
                     ]
                     st.markdown(f"✅ Rows after **name** filter: {len(filtered_df)}")
-
             try:
-                # Try to extract number from query if GPT failed
+                # Try to extract number from query if GPT didn't supply one
                 if not filter_dict.get("total_requested"):
                     import re
                     match = re.search(r'\b(\d+)\b', query)
                     if match:
                         filter_dict["total_requested"] = match.group(1)
-                total = int(filter_dict.get("total_requested", "").strip() or 3)
-            except:
+
+                # Try to convert to integer and validate it's > 0
+                total_requested_raw = filter_dict.get("total_requested", "").strip()
+                total = int(total_requested_raw)
+                if total <= 0:
+                    total = 3
+            except (ValueError, TypeError):
                 total = 3
+
             top_stories = filtered_df.head(total)
 
             st.subheader("📋 Matching Stories")
