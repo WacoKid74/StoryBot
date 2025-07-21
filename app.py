@@ -262,6 +262,8 @@ Only extract real values. If unclear, leave the field empty.
                 total = int(total_requested_raw) if total_requested_raw else 3
                 if total <= 0:
                     total = 3
+                
+                st.write("✅ Rows after number filter:", len(filtered_df))
 
             except (ValueError, TypeError):
                 total = 3
