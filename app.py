@@ -230,6 +230,23 @@ Only extract real values. If unclear, leave the field empty.
                             st.markdown(f"✅ Rows after **(fallback issue)** filter: {len(filtered_df)}")
                             break
 
+            # --- Optional Story Keyword Reinforcement ---
+            issue_synonyms_flat = [term for terms in issue_synonyms.values() for term in terms]
+            query_terms = set(re.findall(r'\b\w+\b', query.lower()))
+
+            specific_terms_in_query = [term for term in query_terms if term in issue_synonyms_flat]
+
+            # If any specific issue-related word was in the original query, reinforce it by checking in the story text
+            if specific_terms_in_query:
+                story_keywords = specific_terms_in_query
+                if "Story" in filtered_df.columns:
+                    story_mask = filtered_df["Story"].astype(str).str.lower().apply(
+                        lambda text: any(keyword in text for keyword in story_keywords)
+                    )
+                    filtered_df = filtered_df[story_mask]
+                    st.markdown(f"✅ Rows after **story keyword refinement**: {len(filtered_df)}")
+
+
 # --- Gender Filter ---
             if filter_dict.get("gender"):
                 gender_input = filter_dict["gender"].lower()
