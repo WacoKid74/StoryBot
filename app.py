@@ -1,4 +1,27 @@
 import streamlit as st
+
+# === Basic password protection ===
+def check_password():
+    def password_entered():
+        if st.session_state["password"] == st.secrets["app_password"]:
+            st.session_state["password_correct"] = True
+            del st.session_state["password"]  # Don't store password
+        else:
+            st.session_state["password_correct"] = False
+
+    if "password_correct" not in st.session_state:
+        st.text_input("Enter password:", type="password", on_change=password_entered, key="password")
+        return False
+    elif not st.session_state["password_correct"]:
+        st.text_input("Enter password:", type="password", on_change=password_entered, key="password")
+        st.error("😕 Incorrect password")
+        return False
+    else:
+        return True
+
+if not check_password():
+    st.stop()
+
 import pandas as pd
 import os
 from openai import OpenAI
@@ -6,7 +29,11 @@ from PIL import Image
 import json
 
 # === Load OpenAI API Key ===
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+client = OpenAI(
+    api_key=st.secrets["OPENAI_API_KEY"],
+    organization=st.secrets["OPENAI_ORG_ID"],
+    project=st.secrets["OPENAI_PROJECT_ID"]
+)
 
 # === Synonyms and Mappings ===
 
@@ -77,8 +104,8 @@ df = pd.read_excel("GPT Version -- BSS Storybank.xlsx")
 df.columns = df.columns.str.strip()
 
 # === Page Layout ===
-st.set_page_config(page_title="Voter Story Search", layout="wide")
-st.title("🔍 Voter Story Search")
+st.set_page_config(page_title="Voter Story Search hi kelli", layout="wide")
+st.title("🔍 Voter Story Search hi kelli")
 st.markdown("Enter a natural language search (e.g. '3 abortion stories from suburban women in Wisconsin'):")
 query = st.text_input("What kind of story are you looking for?", "")
 
@@ -88,7 +115,7 @@ if query:
     prompt = f"""
 You are an assistant helping search a structured voter story database.
 The user asked: '{query}'
-Return a JSON with keys: "state", "issue", "gender", "race", "name", and "total_requested".
+Return a JSON with keys: \"state\", \"issue\", \"gender\", \"race\", \"name\", and \"total_requested\".
 Only extract real values. If unclear, leave the field empty.
 """
 
@@ -112,23 +139,25 @@ Only extract real values. If unclear, leave the field empty.
             filtered_df = df.copy()
 
             if filter_dict.get("state"):
-                states = [s.strip().lower() for s in filter_dict["state"].split(",")]
+                states = [s.strip() for s in filter_dict["state"].split(",")]
                 expanded_states = []
                 for s in states:
-                    val = state_abbr.get(s.upper(), state_abbr.get(s, s))
-                    if isinstance(val, list):
-                        expanded_states.extend(val)
+                    upper_s = s.upper()
+                    lower_s = s.lower()
+                    if upper_s in state_abbr:
+                        val = state_abbr[upper_s]
+                    elif lower_s in state_abbr:
+                        val = state_abbr[lower_s]
                     else:
-                        expanded_states.append(val)
-                expanded_states = []
-                for s in states:
-                    val = state_abbr.get(s, s)
+                        val = s.upper()
                     if isinstance(val, list):
                         expanded_states.extend(val)
                     else:
                         expanded_states.append(val)
                 if "State" in filtered_df.columns:
                     filtered_df = filtered_df[filtered_df["State"].astype(str).str.upper().isin(expanded_states)]
+
+                st.write("✅ Rows after state filter:", len(filtered_df))
 
             if filter_dict.get("issue"):
                 issue = filter_dict["issue"].lower()
@@ -143,9 +172,16 @@ Only extract real values. If unclear, leave the field empty.
                         break
 
             if filter_dict.get("gender"):
-                gender = filter_dict["gender"].lower()
-                if "Gender" in filtered_df.columns:
-                    filtered_df = filtered_df[filtered_df["Gender"].astype(str).str.lower() == gender]
+                gender_input = filter_dict["gender"].lower()
+                normalized_gender = None
+                for label, synonyms in gender_synonyms.items():
+                    if gender_input in synonyms:
+                        normalized_gender = label
+                        break
+                if normalized_gender and "Gender" in filtered_df.columns:
+                    filtered_df = filtered_df[filtered_df["Gender"].astype(str).str.lower() == normalized_gender]
+
+                st.write("✅ Rows after gender filter:", len(filtered_df))
 
             if filter_dict.get("race"):
                 race = filter_dict["race"].lower()
