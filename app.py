@@ -245,21 +245,27 @@ Only extract real values. If unclear, leave the field empty.
             import re
 
             try:
-                # Try to extract number from query if GPT didn't supply one
-                if not filter_dict.get("total_requested"):
+                # Try to extract number from GPT first
+                total_requested_raw = filter_dict.get("total_requested")
+
+                # If missing, infer from query text using numbers or common phrases
+                if not total_requested_raw:
+                    # Check for numeric patterns like "2 stories"
                     match = re.search(r'\b(\d+)\b', query)
                     if match:
-                        filter_dict["total_requested"] = match.group(1)
+                        total_requested_raw = match.group(1)
+                    # Check for singular phrases
+                    elif any(phrase in query.lower() for phrase in ["a story", "one story", "1 story"]):
+                        total_requested_raw = 1
 
-                # Safely handle int or str
-                total_requested_raw = filter_dict.get("total_requested", 3)
-                total = int(total_requested_raw) if isinstance(total_requested_raw, str) else total_requested_raw
+                # Final fallback and sanitization
+                total = int(total_requested_raw) if total_requested_raw else 3
                 if total <= 0:
                     total = 3
+
             except (ValueError, TypeError):
                 total = 3
 
-            # ✅ Always define top_stories after handling the number
             top_stories = filtered_df.head(total)
 
             st.subheader("📋 Matching Stories")
