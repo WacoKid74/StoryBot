@@ -104,8 +104,8 @@ df = pd.read_excel("GPT Version -- BSS Storybank.xlsx")
 df.columns = df.columns.str.strip()
 
 # === Page Layout ===
-st.set_page_config(page_title="Voter Story Search hi kelli", layout="wide")
-st.title("🔍 Voter Story Search hi kelli")
+st.set_page_config(page_title="Voter Story Search", layout="wide")
+st.title("🔍 Voter Story Search")
 st.markdown("Enter a natural language search (e.g. '3 abortion stories from suburban women in Wisconsin'):")
 query = st.text_input("What kind of story are you looking for?", "")
 
