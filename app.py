@@ -171,6 +171,7 @@ Only extract real values. If unclear, leave the field empty.
             filter_dict = json.loads(filters)
             filtered_df = df.copy()
 
+# --- State Filter ---
             if filter_dict.get("state"):
                 states = [s.strip() for s in filter_dict["state"].split(",")]
                 expanded_states = []
@@ -189,9 +190,9 @@ Only extract real values. If unclear, leave the field empty.
                         expanded_states.append(val)
                 if "State" in filtered_df.columns:
                     filtered_df = filtered_df[filtered_df["State"].astype(str).str.upper().isin(expanded_states)]
-
                 st.write("✅ Rows after state filter:", len(filtered_df))
 
+# --- Issue Filter ---
             if filter_dict.get("issue"):
                 issue = filter_dict["issue"].lower()
                 expanded_issues = [issue]
@@ -202,8 +203,10 @@ Only extract real values. If unclear, leave the field empty.
                     if col in filtered_df.columns:
                         mask = filtered_df[col].astype(str).str.lower().apply(lambda x: any(term in x for term in expanded_issues))
                         filtered_df = filtered_df[mask]
+                        st.markdown(f"✅ Rows after **issue** filter: {len(filtered_df)}")
                         break
 
+# --- Gender Filter ---
             if filter_dict.get("gender"):
                 gender_input = filter_dict["gender"].lower()
                 normalized_gender = None
@@ -213,9 +216,9 @@ Only extract real values. If unclear, leave the field empty.
                         break
                 if normalized_gender and "Gender" in filtered_df.columns:
                     filtered_df = filtered_df[filtered_df["Gender"].astype(str).str.lower() == normalized_gender]
-
                 st.write("✅ Rows after gender filter:", len(filtered_df))
 
+# --- Race Filter ---
             if filter_dict.get("race"):
                 race = filter_dict["race"].lower()
                 expanded_races = [race]
@@ -226,8 +229,10 @@ Only extract real values. If unclear, leave the field empty.
                     if col in filtered_df.columns:
                         mask = filtered_df[col].astype(str).str.lower().apply(lambda x: any(term in x for term in expanded_races))
                         filtered_df = filtered_df[mask]
+                        st.markdown(f"✅ Rows after **race** filter: {len(filtered_df)}")
                         break
 
+# --- Name Filter ---
             if filter_dict.get("name"):
                 name = filter_dict["name"].lower()
                 if "First Name" in filtered_df.columns and "Last Name" in filtered_df.columns:
@@ -235,6 +240,7 @@ Only extract real values. If unclear, leave the field empty.
                         filtered_df["First Name"].astype(str).str.lower().str.contains(name, na=False) |
                         filtered_df["Last Name"].astype(str).str.lower().str.contains(name, na=False)
                     ]
+                    st.markdown(f"✅ Rows after **name** filter: {len(filtered_df)}")
 
             try:
                 # Try to extract number from query if GPT failed
